@@ -1,10 +1,8 @@
 package models
 
 import (
-	"database/sql"
-
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
 type User struct {
@@ -30,27 +28,15 @@ func (Order) TableName() string {
 
 func InitDB() (*gorm.DB, error) {
 	var err error
-	dsn := "postgres://ayush:envy@tcp(127.0.0.1:5432)/jsonstore"
-	sqlDB, err := sql.Open("postgres",dsn)
-	if err != nil{
-		panic(err)
-	}
-	db, err := gorm.Open(postgres.New(postgres.Config{
-		Conn: sqlDB,
-	}), &gorm.Config{})
+	
+	db, err := gorm.Open("postgres","postgres://ayush:envy@localhost/jsonstore?sslmode=disable")
 	if err != nil {
 		return nil, err
-	} else {
-		//the below automigrate is equivalent to this
-		// if !db.Migrator().HasTable("user"){
-		// 	db.Migrator().CreateTable(&User{})
-		// }
-		// if !db.Migrator().HasTable("order"){
-		// 	db.Migrator().CreateTable(&Order{})
-		// }
-
-		db.AutoMigrate(&User{}, &Order{})
-		return db, nil
 	}
+	
+	//creates tables 
+	db.AutoMigrate(&User{}, &Order{})
+		return db, nil
+	
 
 }
