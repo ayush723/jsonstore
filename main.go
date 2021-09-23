@@ -10,7 +10,7 @@ import (
 	"github.com/ayush723/jsonstore/models"
 
 	"github.com/gorilla/mux"
-	"gorm.io/gorm"
+	"github.com/jinzhu/gorm"
 )
 
 //DB stores the database session information.
@@ -83,7 +83,7 @@ func main(){
 	if err != nil {
 	panic(err)
 	}
-
+	defer db.Close()
 	// Create a new router
 	r := mux.NewRouter()
 	// Attach an elegant path with handler
@@ -98,5 +98,6 @@ func main(){
 	WriteTimeout: 15 * time.Second,
 	ReadTimeout: 15 * time.Second,
 }
+	log.Println("up and running on localhost:8000")
 	log.Fatal(srv.ListenAndServe())
 }
